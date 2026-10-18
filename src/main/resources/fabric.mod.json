@@ -5,7 +5,7 @@
   "name": "PvP Helper Mod",
   "description": "Hien thi goi y tren tam ngam khi dang roi tu do va nham vao nguoi choi khac.",
   "authors": [
-    "Your Name"
+    "It_MinhMc"
   ],
   "license": "MIT",
   "environment": "client",
@@ -15,8 +15,8 @@
     ]
   },
   "depends": {
-    "fabricloader": ">=0.16.0",
-    "minecraft": "~1.21.1",
+    "fabricloader": ">=0.18.1",
+    "minecraft": "1.21.11",
     "java": ">=21",
     "fabric-api": "*"
   }
