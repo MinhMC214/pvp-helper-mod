@@ -16,7 +16,13 @@ import net.minecraft.world.phys.HitResult;
 public class CrosshairIndicatorMod implements ClientModInitializer {
 
     private static final double MIN_FALL_DISTANCE = 1.5;
-    private static final int OFFSET_Y = 12;
+
+    // Khoang cach tu tam ngam len mep duoi cua chu (don vi: pixel)
+    // Muon chu cao hon nua thi tang so nay (vi du 20, 30)
+    private static final int OFFSET_ABOVE = 12;
+
+    // Chieu cao mot dong chu cua Minecraft
+    private static final int TEXT_HEIGHT = 9;
 
     // 0xFF5555 va 0x55FF55 them kenh alpha FF o dau (ARGB) de chac chan hien thi
     private static final int COLOR_AXE = 0xFFFF5555;
@@ -74,8 +80,11 @@ public class CrosshairIndicatorMod implements ClientModInitializer {
 
         Font font = client.font;
 
+        // Can giua man hinh theo chieu ngang
         int x = (graphics.guiWidth() - font.width(message)) / 2;
-        int y = graphics.guiHeight() / 2 + OFFSET_Y;
+
+        // Nam tren tam ngam: lay tam man hinh tru khoang cach va tru chieu cao chu
+        int y = graphics.guiHeight() / 2 - OFFSET_ABOVE - TEXT_HEIGHT;
 
         // shadow = true
         graphics.drawString(font, message, x, y, color, true);
