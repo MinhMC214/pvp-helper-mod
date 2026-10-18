@@ -1,41 +1,47 @@
 package com.example.pvphelper;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 
 public class CrosshairIndicatorMod implements ClientModInitializer {
 
-    private static final float MIN_FALL_DISTANCE = 1.5f;
+    private static final double MIN_FALL_DISTANCE = 1.5;
     private static final int OFFSET_Y = 12;
 
-    private static final int COLOR_AXE = 0xFF5555;
-    private static final int COLOR_MACE = 0x55FF55;
+    // 0xFF5555 va 0x55FF55 them kenh alpha FF o dau (ARGB) de chac chan hien thi
+    private static final int COLOR_AXE = 0xFFFF5555;
+    private static final int COLOR_MACE = 0xFF55FF55;
 
     private static final String TEXT_AXE = "DUNG RIU (PHA KHIEN)";
     private static final String TEXT_MACE = "DUNG MACE (SMASH)";
 
     @Override
     public void onInitializeClient() {
-        HudRenderCallback.EVENT.register((drawContext, tickCounter) -> render(drawContext));
+        HudElementRegistry.attachElementAfter(
+                VanillaHudElements.CROSSHAIR,
+                Identifier.fromNamespaceAndPath("pvphelper", "crosshair_indicator"),
+                (graphics, deltaTracker) -> render(graphics)
+        );
     }
 
-    private void render(DrawContext drawContext) {
-        MinecraftClient client = MinecraftClient.getInstance();
-        ClientPlayerEntity player = client.player;
+    private void render(GuiGraphics graphics) {
+        Minecraft client = Minecraft.getInstance();
+        LocalPlayer player = client.player;
 
-        if (player == null || client.world == null) {
+        if (player == null || client.level == null) {
             return;
         }
-        if (client.options.hudHidden) {
+        if (client.options.hideGui) {
             return;
         }
 
@@ -45,13 +51,13 @@ public class CrosshairIndicatorMod implements ClientModInitializer {
         }
 
         // Tam ngam phai chi vao mot thuc the
-        HitResult hit = client.crosshairTarget;
+        HitResult hit = client.hitResult;
         if (!(hit instanceof EntityHitResult entityHit)) {
             return;
         }
 
         Entity target = entityHit.getEntity();
-        if (!(target instanceof PlayerEntity otherPlayer)) {
+        if (!(target instanceof Player otherPlayer)) {
             return;
         }
 
@@ -66,16 +72,12 @@ public class CrosshairIndicatorMod implements ClientModInitializer {
             color = COLOR_MACE;
         }
 
-        TextRenderer textRenderer = client.textRenderer;
-        Text text = Text.literal(message);
+        Font font = client.font;
 
-        int screenWidth = drawContext.getScaledWindowWidth();
-        int screenHeight = drawContext.getScaledWindowHeight();
-
-        int x = (screenWidth - textRenderer.getWidth(text)) / 2;
-        int y = screenHeight / 2 + OFFSET_Y;
+        int x = (graphics.guiWidth() - font.width(message)) / 2;
+        int y = graphics.guiHeight() / 2 + OFFSET_Y;
 
         // shadow = true
-        drawContext.drawText(textRenderer, text, x, y, color, true);
+        graphics.drawString(font, message, x, y, color, true);
     }
 }
