@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "pvphelper",
+  "version": "${version}",
+  "name": "PvP Helper Mod",
+  "description": "Hien thi goi y tren tam ngam khi dang roi tu do va nham vao nguoi choi khac.",
+  "authors": [
+    "Your Name"
+  ],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.example.pvphelper.CrosshairIndicatorMod"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
